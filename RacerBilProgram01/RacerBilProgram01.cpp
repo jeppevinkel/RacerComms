@@ -7,6 +7,7 @@
 #endif
 
 #include "SerialPort.hpp"
+//test
 
 using namespace std;
 using namespace rwhw;
