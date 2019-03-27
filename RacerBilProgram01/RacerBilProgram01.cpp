@@ -71,7 +71,7 @@ int main(int argc, char **args)
 				}
 				if (outPut != -52 && outPut != 10)
 				{
-					cout << outPut << endl;
+					cout << (char) outPut << endl;
 				}
 			}
 			break;
@@ -91,7 +91,7 @@ int main(int argc, char **args)
 				}
 				if (outPut != -52 && outPut != 10)
 				{
-					cout << outPut << endl;
+					cout << (char)outPut << endl;
 				}
 			}
 			break;
