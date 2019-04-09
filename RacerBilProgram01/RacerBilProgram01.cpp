@@ -40,12 +40,15 @@ int main(int argc, char **args)
 {
 	char input[56];
 	SerialPort serial;
-	serial.open("COM3", SerialPort::Baud9600);
+	serial.open("COM8", SerialPort::Baud9600);
 
 	// Flush
 	serial.clean();
 
 	char c[128];
+	/*while(true){
+		cout << readSerial(serial) << endl;
+	}*/
 
 	while (true) {
 		cout << "Please enter command:\n";
