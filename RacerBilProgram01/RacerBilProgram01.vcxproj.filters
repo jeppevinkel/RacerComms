@@ -37,5 +37,11 @@
     <ClInclude Include="SerialPort.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BaseWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

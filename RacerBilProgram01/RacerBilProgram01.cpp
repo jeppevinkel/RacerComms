@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#include <thread>
+#include <windows.h>
+#include "MainWindows.h"
 
 #ifdef _WIN32
 #include <io.h>
@@ -18,7 +21,6 @@ constexpr unsigned int str2int(const char* str, int h = 0)
 }
 
 char readSerial(SerialPort & serial) {
-	string outPut = ".";
 #ifdef _WIN32
 	Sleep(100);
 #else
@@ -26,31 +28,39 @@ char readSerial(SerialPort & serial) {
 #endif
 	char buf[1];
 	serial.read(buf, 1);
-	/*while((int)outPut.back() != 45){
-		if ((int)buf[0] != -52 && (int)buf[0] != 10)
+	return buf[0];
+}
+
+void getSerialStuff(SerialPort &serial, string &stringToAppend) {
+	while (true)
+	{
+		char outPut = readSerial(serial);
+		if (outPut != -52 && outPut != 10)
 		{
-			outPut += ((int)buf[0]);
+			stringToAppend += outPut;
 		}
 	}
-	return outPut;*/
-	return buf[0];
 }
 
 int main(int argc, char **args)
 {
-	char input[56];
+	/*char input[56];
 	SerialPort serial;
-	serial.open("COM8", SerialPort::Baud9600);
+	serial.open("COM4", SerialPort::Baud9600, SerialPort::Data8, SerialPort::None, SerialPort::Stop2_0);
+
+	string rxString = "";
 
 	// Flush
 	serial.clean();
 
 	char c[128];
-	/*while(true){
-		cout << readSerial(serial) << endl;
-	}*/
 
-	while (true) {
+	//
+	std::thread t1(getSerialStuff, std::ref(serial), std::ref(rxString));
+	
+	MainWindow *myWindow = new MainWindow();
+
+	/*while (true) {
 		cout << "Please enter command:\n";
 		cin >> input;
 
@@ -58,51 +68,24 @@ int main(int argc, char **args)
 		bool stopThis = false;
 
 		switch(str2int(input)){
-		case str2int("start"):
+		case str2int("slow"):
 			c[0] = 'A';
 			serial.write(c, 1);
-			while (!stopThis)
-			{
-				int outPut = (int)readSerial(serial);
-				if (outPut != -52 && startVal == false)
-				{
-					startVal = true;
-				}
-				else if ((startVal && outPut == -52) || (startVal && outPut == 10))
-				{
-					stopThis = true;
-				}
-				if (outPut != -52 && outPut != 10)
-				{
-					cout << (char) outPut << endl;
-				}
-			}
 			break;
-		case str2int("stop"):
-			c[0] = 'B';
+		case str2int("fast"):
+			c[0] = 'z';
 			serial.write(c, 1);
-			while (!stopThis)
-			{
-				int outPut = (int)readSerial(serial);
-				if (outPut != -52 && startVal == false)
-				{
-					startVal = true;
-				}
-				else if ((startVal && outPut == -52) || (startVal && outPut == 10))
-				{
-					stopThis = true;
-				}
-				if (outPut != -52 && outPut != 10)
-				{
-					cout << (char)outPut << endl;
-				}
-			}
 			break;
 		default:
 			cout << "Invalid command. Please try again!\n";
 			break;
 		}
+		/*if (!rxString.empty())
+		{
+			cout << stoi(rxString) << endl;
+			rxString.clear();
+		}
 	}
 
-	serial.close();
+	serial.close();*/
 }
