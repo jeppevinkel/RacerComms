@@ -155,7 +155,7 @@ void SerialPort::close() {
     }
 }
 
-bool SerialPort::write(const char* buf, int len) {
+bool SerialPort::write(const unsigned char* buf, int len) {
 	debugPrint("write", buf, len);
     if(cfd==NULL)
         return false;
@@ -181,7 +181,7 @@ bool SerialPort::write(const char* buf, int len) {
     return true;
 }
 
-int SerialPort::read(char* buf, int len) {
+int SerialPort::read(unsigned char* buf, int len) {
     if(cfd==NULL)
         return 0;
     DWORD length;

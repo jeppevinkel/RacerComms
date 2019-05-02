@@ -114,7 +114,7 @@ namespace rwhw {
          * @param buf [in] buffer containing characters to send
          * @param n [in] number of characters
          */
-        virtual bool write(const char* buf, int n);
+        virtual bool write(const unsigned char* buf, int n);
 
         /**
          * @brief Reads characters from port. The read operation is non blocking
@@ -124,7 +124,7 @@ namespace rwhw {
          * @return number of characters that was actually read
          *
          */
-        virtual int read(char* buf, int n);
+        virtual int read(unsigned char* buf, int n);
 
         /**
          * @brief Reads n characters from the serial port using calls to
@@ -132,7 +132,7 @@ namespace rwhw {
          * until n bytes are read or timeout.
          */
         virtual bool read(
-            char* buf,
+            unsigned char* buf,
             const unsigned int n,
             const unsigned int timeout,
             const unsigned int sInterval);
@@ -145,7 +145,7 @@ namespace rwhw {
     private:
         SerialPort(const SerialPort&);
         SerialPort& operator=(const SerialPort&);
-        static void debugPrint(const char* str, const char* buf, int n);
+        static void debugPrint(const char* str, const unsigned char* buf, int n);
 		#if (defined _WIN32) || (defined __CYGWIN__)
 		HANDLE cfd;
 		#endif

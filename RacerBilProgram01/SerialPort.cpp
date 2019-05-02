@@ -60,7 +60,7 @@ void sleepMs(int period){
 }
 
 bool SerialPort::read(
-    char* buf,
+    unsigned char* buf,
     const unsigned int n,
     const unsigned int timeout,
     const unsigned int sInterval)
@@ -82,7 +82,7 @@ bool SerialPort::read(
     return false;
 }
 
-void SerialPort::debugPrint(const char* str, const char* buf, int n) {
+void SerialPort::debugPrint(const char* str, const unsigned char* buf, int n) {
 	//printf ("%s ", str);
 
 	//for(unsigned int i=0; i<n; ++i) {
