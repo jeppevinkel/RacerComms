@@ -7,6 +7,8 @@
 #include <Bits.h>
 #include <algorithm>
 #include <cassert>
+#include <fstream>
+#include <ctime>
 //#include <windows.h>
 //#include "MainWindows.h"
 
@@ -60,9 +62,26 @@ void getSerialStuff(SerialPort &serial, string &stringToAppend) {
 
 int main(int argc, char **args)
 {
+	int mode = -1;
+	std::cout << "Please select mode.\nType 1 to send commands.\nType 2 to receive information." << std::endl;
+	std::cin >> mode;
+
+	std::string comPort = "";
+	std::cout << "Please select COM port.\nJust type the number of the port you use!" << std::endl;
+	std::cin >> comPort;
+
+	time_t t = time(0);   // get time now
+	struct tm* now = localtime(&t);
+
+	char dt[80];
+	strftime(dt, 80, "Sample-%b%d_kl_%H%M.csv", now);
+
 	string input;
 	SerialPort serial;
-	serial.open("COM3", SerialPort::Baud9600, SerialPort::Data8, SerialPort::None, SerialPort::Stop2_0);
+	serial.open("COM" + comPort, SerialPort::Baud9600, SerialPort::Data8, SerialPort::None, SerialPort::Stop2_0);
+
+	std::ofstream myFile;
+	myFile.open(std::string(dt));
 
 	int speed = 20;
 
@@ -71,51 +90,54 @@ int main(int argc, char **args)
 	// Flush
 	serial.clean();
 
-	char c[128];
+	unsigned char c[128];
 
 	//
 	std::thread t1(getSerialStuff, std::ref(serial), std::ref(rxString));
 
 	while (true) {
-		//cout << "Please enter command:\n";
-		////cin >> input;
-		////cin.getline(input, sizeof(input));
-		//vector<string> inArgs(2);
-		//getline(cin, input);
+		if (mode == 1) {
+			cout << "Please enter command:\n";
+			vector<string> inArgs(2);
+			getline(cin, input);
 
-		//int i = 0;
-		//stringstream ssin(input);
-		//while (ssin.good() && i < 4) {
-		//	ssin >> inArgs[i];
-		//	++i;
-		//}
+			int i = 0;
+			stringstream ssin(input);
+			while (ssin.good() && i < 4) {
+				ssin >> inArgs[i];
+				++i;
+			}
 
-		//bool startVal = false;
-		//bool stopThis = false;
+			bool startVal = false;
+			bool stopThis = false;
 
-		//switch(str2int(inArgs[0].c_str())){
-		//case str2int("stop"):
-		//	c[0] = 0;
-		//	serial.write(c, 1);
-		//	break;
-		//case str2int("start"):
-		//	c[0] = speed;
-		//	serial.write(c, 1);
-		//	break;
-		//case str2int("speed"):
-		//	c[0] = clamp(stoi(inArgs[1]), 0, 255);
-		//	speed = clamp(stoi(inArgs[1]), 0, 255);
-		//	serial.write(c, 1);
-		//	break;
+			switch(str2int(inArgs[0].c_str())){
+			case str2int("stop"):
+				c[0] = 0;
+				serial.write(c, 1);
+				break;
+			case str2int("start"):
+				c[0] = speed;
+				serial.write(c, 1);
+				break;
+			case str2int("speed"):
+				c[0] = clamp(stoi(inArgs[1]), 0, 255);
+				speed = clamp(stoi(inArgs[1]), 0, 255);
+				serial.write(c, 1);
+				break;
 
-		//default:
-		//	cout << "Invalid command. Please try again!\n";
-		//	break;
-		//}
-		if (!rxString.empty())
-		{
-			cout << rxString << endl;
-			rxString.clear();
+			default:
+				cout << "Invalid command. Please try again!\n";
+				break;
+			}
+		}
+		else {
+			if (!rxString.empty())
+			{
+				cout << rxString << endl;
+				myFile << rxString << endl;
+				rxString.clear();
+			}
 		}
 	}
 
