@@ -6,17 +6,8 @@
 #include <sstream>
 #include <Bits.h>
 #include <algorithm>
-#include <cassert>
 #include <fstream>
 #include <ctime>
-//#include <windows.h>
-//#include "MainWindows.h"
-
-#ifdef _WIN32
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
 
 #include "SerialPort.hpp"
 
@@ -49,13 +40,13 @@ const char* hex2byte(const char* buf)
 	return bufHex;
 }
 
-void getSerialStuff(SerialPort &serial, string &stringToAppend) {
+void getSerialStuff(SerialPort &serial, std::string &stringToAppend) {
 	while (true)
 	{
 		unsigned char outPut = readSerial(serial);
 		if ((int)outPut != 204)
 		{
-			stringToAppend += to_string((int)outPut);
+			stringToAppend += std::to_string((int)outPut);
 		}
 	}
 }
@@ -76,7 +67,7 @@ int main(int argc, char **args)
 	char dt[80];
 	strftime(dt, 80, "Sample-%b%d_kl_%H%M.csv", now);
 
-	string input;
+	std::string input;
 	SerialPort serial;
 	serial.open("COM" + comPort, SerialPort::Baud9600, SerialPort::Data8, SerialPort::None, SerialPort::Stop2_0);
 
@@ -85,7 +76,7 @@ int main(int argc, char **args)
 
 	int speed = 20;
 
-	string rxString = "";
+	std::string rxString = "";
 
 	// Flush
 	serial.clean();
@@ -97,12 +88,12 @@ int main(int argc, char **args)
 
 	while (true) {
 		if (mode == 1) {
-			cout << "Please enter command:\n";
-			vector<string> inArgs(2);
-			getline(cin, input);
+			std::cout << "Please enter command:\n";
+			std::vector<std::string> inArgs(2);
+			std::getline(std::cin, input);
 
 			int i = 0;
-			stringstream ssin(input);
+			std::stringstream ssin(input);
 			while (ssin.good() && i < 4) {
 				ssin >> inArgs[i];
 				++i;
@@ -121,21 +112,21 @@ int main(int argc, char **args)
 				serial.write(c, 1);
 				break;
 			case str2int("speed"):
-				c[0] = clamp(stoi(inArgs[1]), 0, 255);
-				speed = clamp(stoi(inArgs[1]), 0, 255);
+				c[0] = std::clamp(stoi(inArgs[1]), 0, 255);
+				speed = std::clamp(stoi(inArgs[1]), 0, 255);
 				serial.write(c, 1);
 				break;
 
 			default:
-				cout << "Invalid command. Please try again!\n";
+				std::cout << "Invalid command. Please try again!\n";
 				break;
 			}
 		}
 		else {
 			if (!rxString.empty())
 			{
-				cout << rxString << endl;
-				myFile << rxString << endl;
+				std::cout << rxString << std::endl;
+				myFile << rxString << std::endl;
 				rxString.clear();
 			}
 		}
